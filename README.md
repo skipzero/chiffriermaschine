@@ -1,12 +1,12 @@
-# chiffriermaschine
-Die Enigma Chiffriermaschine (Verschlüsselungsmaschine)
+# React + Vite
 
-Unassailable in its encryption security
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Every attempt at deciphering is a waste of time
+Currently, two official plugins are available:
 
-Complete secrecy even when key changes are transmitted in plain text
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-17,576 periods / Each period 15,777,450 characters.
+## Expanding the ESLint configuration
 
-In half a minute each of the 277,304,461,200 keys is set. No part is replaced for a key change
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
