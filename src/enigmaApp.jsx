@@ -75,42 +75,45 @@ const EnigmaApp = () => {
   };
 
   return (
-    <div className='container' style={{  }}>
-      <label id='label-input' className='black-ops-one-regular' htmlFor='message-input'><h2>Enigma Machine</h2>
-
-        <textarea
-          id="message-input"
-          name="message-input"
-          rows="4"
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          placeholder="Enter message"
-          style={{ width: '100%', marginBottom: '1rem' }}
-        />
-      </label>
-
+    <div className='container'>
       <div>
+        <label id='label-input' className='black-ops-one-regular' htmlFor='message-input'><h2>Enigma Machine</h2>
+
+          <textarea
+            id="message-input"
+            name="message-input"
+            rows="4"
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            placeholder="Enter message"
+            style={{ width: '100%', marginBottom: '1rem' }}
+          />
+        </label>
+      </div>
+      <div className='rotors' style={{border:'1px solid #ccc'}}>
         <strong>Rotor Selection and Positions:</strong><br />
         {[0, 1, 2].map(i => (
-          <div key={i}>
-            <select value={selectedRotors[i]} onChange={e => updateRotorSelection(i, e.target.value)}>
-              {Object.keys(rotorLibrary).map(r => (
-                <option key={r} value={r}>{r}</option>
-              ))}
-            </select>
-            <input
-              type="number"
-              min="0"
-              max="25"
-              value={positions[i]}
-              onChange={e => updateRotorPosition(i, e.target.value)}
-              style={{ width: '50px', marginLeft: '10px' }}
-            />
-          </div>
-        ))}
+  <div key={i} style={{ border:'1px solid #00f', display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+    
+    <select value={selectedRotors[i]} onChange={e => updateRotorSelection(i, e.target.value)}>
+      {Object.keys(rotorLibrary).map(rotor => (
+        <option key={rotor} value={rotor}>{rotor}</option>
+      ))}
+    </select>
+    <input
+      type="number"
+      min="0"
+      max="25"
+      value={positions[i]}
+      onChange={e => updateRotorPosition(i, e.target.value)}
+      style={{ width: '50px', marginLeft: '10px' }}
+    />
+  </div>
+))}
+
       </div>
 
-      <div style={{ marginTop: '1rem' }}>
+      <div className='mode-select'>
         <label>
           <input
             type="radio"
@@ -131,13 +134,14 @@ const EnigmaApp = () => {
           />
           Decrypt
         </label>
+     
+
+        <button onClick={handleEncrypt} style={{ marginTop: '1rem' }} disabled={isAnimating}>
+          {isAnimating ? (mode === 'decrypt' ? 'Decrypting...' : 'Encrypting...') : (mode === 'decrypt' ? 'Decrypt' : 'Encrypt')}
+        </button>
       </div>
 
-      <button onClick={handleEncrypt} style={{ marginTop: '1rem' }} disabled={isAnimating}>
-        {isAnimating ? (mode === 'decrypt' ? 'Decrypting...' : 'Encrypting...') : (mode === 'decrypt' ? 'Decrypt' : 'Encrypt')}
-      </button>
-
-      <div style={{ marginTop: '2rem' }}>
+      <div className='output'>
         <strong>Output:</strong>
         <pre style={{ background: '#111', color: '#0f0', padding: '1rem' }}>{output}</pre>
       </div>
@@ -146,6 +150,3 @@ const EnigmaApp = () => {
 };
 
 export default EnigmaApp;
-
-// Export this helper to match usage
-// import { processChar } from './enigmaUtils.js';

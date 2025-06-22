@@ -1,27 +1,27 @@
 // enigmaUtils.js - Functional Enigma Logic
 const A = 65;
 
-const mod = (n, m) => ((n % m) + m) % m;
+const mod = (num, max) => ((num % max) + max) % max;
 
 const toLetter = i => String.fromCharCode(A + i);
 const toIndex = c => c.charCodeAt(0) - A;
 
 const invertWiring = wiring => {
   const result = Array(26);
-  wiring.split('').forEach((c, i) => {
-    result[toIndex(c)] = toLetter(i);
+  wiring.split('').forEach((char, i) => {
+    result[toIndex(char)] = toLetter(i);
   });
   return result.join('');
 };
 
-const plugSwap = (plugboard, c) => plugboard[c] || c;
+const plugSwap = (plugboard, char) => plugboard[char] || char;
 
 const rotate = pos => mod(pos + 1, 26);
 
-const processChar = (c, rotors, reflector, plugboard, decrypt = false) => {
+const processChar = (char, rotors, reflector, plugboard, decrypt = false) => {
   if (!Array.isArray(rotors)) throw new TypeError('Expected rotors to be an array');
 
-  if (!/^[A-Z]$/.test(c)) return { letter: c, rotors };
+  if (!/^[A-Z]$/.test(char)) return { letter: char, rotors };
 
   const [r1, r2, r3] = rotors;
 
@@ -35,18 +35,18 @@ const processChar = (c, rotors, reflector, plugboard, decrypt = false) => {
     { ...r3, pos: newR3Pos }
   ];
 
-  const encode = (c, wiring, pos) => {
-    const i = mod(toIndex(c) + pos, 26);
+  const encode = (char, wiring, pos) => {
+    const i = mod(toIndex(char) + pos, 26);
     return toLetter(mod(toIndex(wiring[i]) - pos, 26));
   };
 
-  const decode = (c, wiring, pos) => {
+  const decode = (char, wiring, pos) => {
     const inverse = invertWiring(wiring);
-    const i = mod(toIndex(c) + pos, 26);
+    const i = mod(toIndex(char) + pos, 26);
     return toLetter(mod(toIndex(inverse[i]) - pos, 26));
   };
 
-  let letter = plugSwap(plugboard, c);
+  let letter = plugSwap(plugboard, char);
 
   const encodeChain = decrypt ? updatedRotors : [...updatedRotors].reverse();
   const decodeChain = decrypt ? [...updatedRotors].reverse() : updatedRotors;
@@ -72,9 +72,9 @@ const encryptMessage = (message, rotors, reflector, plugboard, decrypt = false) 
     .toUpperCase()
     .replace(/[^A-Z]/g, '')
     .split('')
-    .reduce((acc, c) => {
+    .reduce((acc, char) => {
       const { letter, rotors: nextRotors } = processChar(
-        c,
+        char,
         acc.rotors,
         reflector,
         plugboard,
