@@ -65,7 +65,8 @@ const processChar = (char, rotors, reflector, plugboard, decrypt = false) => {
 
   return { letter, rotors: updatedRotors };
 };
-
+/**
+ // encryptMessage is for bulk processing messages 
 const encryptMessage = (message, rotors, reflector, plugboard, decrypt = false) => {
   if (!Array.isArray(rotors)) throw new TypeError('rotors must be an array');
   return message
@@ -86,5 +87,5 @@ const encryptMessage = (message, rotors, reflector, plugboard, decrypt = false) 
       };
     }, { result: '', rotors }).result;
 };
-
-export { encryptMessage, processChar };
+**/
+export { processChar };

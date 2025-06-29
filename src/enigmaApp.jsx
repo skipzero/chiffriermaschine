@@ -1,7 +1,6 @@
-// EnigmaApp.jsx - React GUI
 import React, { useState } from 'react';
-import { encryptMessage, processChar } from './enigmaUtils.js';
-import './enigma.css'
+import { processChar } from './enigmaUtils.js';
+import './enigma.css';
 
 const rotorLibrary = {
   I: { wiring: 'EKMFLGDQVZNTOWYHXUSPAIBRCJ', notch: 'Q' },
@@ -25,7 +24,7 @@ const EnigmaApp = () => {
   const [positions, setPositions] = useState([0, 0, 0]);
   const [selectedRotors, setSelectedRotors] = useState(['I', 'II', 'III']);
   const [isAnimating, setIsAnimating] = useState(false);
-  const [mode, setMode] = useState('encrypt');
+  const [mode, setMode] = useState('encrypt'); // purely for label/UI
 
   const updateRotorPosition = (index, value) => {
     const updated = [...positions];
@@ -39,17 +38,18 @@ const EnigmaApp = () => {
     setSelectedRotors(updated);
   };
 
-  const handleEncrypt = () => {
-    const configuredRotors = selectedRotors.map((key, i) => ({
+  const handleRun = () => {
+    const initialRotors = selectedRotors.map((key, i) => ({
       ...rotorLibrary[key],
       pos: positions[i]
     }));
+
+    let currentRotors = initialRotors.map(r => ({ ...r }));
 
     setOutput('');
     setIsAnimating(true);
 
     const message = input.toUpperCase().replace(/[^A-Z]/g, '').split('');
-    let currentRotors = configuredRotors;
 
     const animate = (i = 0) => {
       if (i >= message.length) {
@@ -61,8 +61,7 @@ const EnigmaApp = () => {
         message[i],
         currentRotors,
         reflectorB,
-        plugboard,
-        mode === 'decrypt'
+        plugboard
       );
 
       currentRotors = newRotors;
@@ -76,41 +75,35 @@ const EnigmaApp = () => {
 
   return (
     <div className='container'>
-      <div>
-        <label id='label-input' className='black-ops-one-regular' htmlFor='message-input'><h2>Enigma Machine</h2>
+      <h2>Enigma Machine</h2>
 
-          <textarea
-            id="message-input"
-            name="message-input"
-            rows="4"
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            placeholder="Enter message"
-            style={{ width: '100%', marginBottom: '1rem' }}
-          />
-        </label>
-      </div>
-      <div className='rotors' style={{border:'1px solid #ccc'}}>
-        <strong>Rotor Selection and Positions:</strong><br />
+      <textarea
+        className='input'
+        rows="4"
+        value={input}
+        onChange={e => setInput(e.target.value)}
+        placeholder="Enter message"
+      />
+
+      <div className='rotors' style={{ border: '1px solid #ccc' }}>
+        <label>Rotor Selection and Positions:</label>
         {[0, 1, 2].map(i => (
-  <div key={i} style={{ border:'1px solid #00f', display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-    
-    <select value={selectedRotors[i]} onChange={e => updateRotorSelection(i, e.target.value)}>
-      {Object.keys(rotorLibrary).map(rotor => (
-        <option key={rotor} value={rotor}>{rotor}</option>
-      ))}
-    </select>
-    <input
-      type="number"
-      min="0"
-      max="25"
-      value={positions[i]}
-      onChange={e => updateRotorPosition(i, e.target.value)}
-      style={{ width: '50px', marginLeft: '10px' }}
-    />
-  </div>
-))}
-
+          <div key={i} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+            <select value={selectedRotors[i]} onChange={e => updateRotorSelection(i, e.target.value)}>
+              {Object.keys(rotorLibrary).map(rotor => (
+                <option key={rotor} value={rotor}>{rotor}</option>
+              ))}
+            </select>
+            <input
+              className='position'
+              type="number"
+              min="0"
+              max="25"
+              value={positions[i]}
+              onChange={e => updateRotorPosition(e.target.value)}
+            />
+          </div>
+        ))}
       </div>
 
       <div className='mode-select'>
@@ -134,12 +127,10 @@ const EnigmaApp = () => {
           />
           Decrypt
         </label>
-     
-
-        <button onClick={handleEncrypt} style={{ marginTop: '1rem' }} disabled={isAnimating}>
-          {isAnimating ? (mode === 'decrypt' ? 'Decrypting...' : 'Encrypting...') : (mode === 'decrypt' ? 'Decrypt' : 'Encrypt')}
-        </button>
-      </div>
+        <button onClick={handleRun} disabled={isAnimating}>
+          {isAnimating ? 'Processing...' : (mode === 'decrypt' ? 'Decrypt' : 'Encrypt')}
+        </button>  
+        </div>
 
       <div className='output'>
         <strong>Output:</strong>
