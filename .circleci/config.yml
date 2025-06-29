@@ -10,10 +10,10 @@ jobs:
     steps:
       - checkout
       - node/install-packages:
-          <<: *install-packages-args
+          "npm i"
       - run:
           name: Run tests
-          command: npm run test
+          command: npm test
 
 workflows:
   main:
