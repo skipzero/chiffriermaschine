@@ -10,16 +10,36 @@ orbs:
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
+jobs:
+  build:
+    working_directory: ~/src
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-npm
+      - node/install-packages:
+          app-dir: ~/src
+          cache-path: ~/node_modules
+          override-ci-command: "npm i"
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+test:
+    docker:
+      - image: cimg/node:current
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Test
+          command: npm test
+
 workflows:
-  enigma: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  version: 2
+  build_and_test:
     jobs:
-      - node/test:
-          # This is the node version to use for the `cimg/node` tag
-          # Relevant tags can be found on the CircleCI Developer Hub
-          # https://circleci.com/developer/images/image/cimg/node
-          version: '23.6'
-          # If you are using yarn, change the line below from "npm" to "yarn"
-          pkg-manager: npm
-          #run all tests in the project
-          script: npm test
+      - build
+      - test:
+          requires:
+            - build
