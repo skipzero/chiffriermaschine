@@ -5,6 +5,6 @@ import EnigmaFPApp from './enigmaApp.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <EnigmaFPApp />
+    <EnigmaFPAp />
   </StrictMode>,
 )
